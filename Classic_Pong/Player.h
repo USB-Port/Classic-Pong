@@ -1,3 +1,11 @@
+/*
+*	Author: USB-Port
+*	File:   player.h
+*	Date:   January 3rd 2017
+*
+*	This is the header file to the player class.
+*/
+
 #pragma once
 #ifndef PLAYER_H
 #define PLAYER_H

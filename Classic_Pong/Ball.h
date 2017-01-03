@@ -1,3 +1,11 @@
+/*
+*	Author: USB-Port
+*	File:   ball.h
+*	Date:   January 3rd 2017
+*
+*	This is the header file to the ball class.
+*/
+
 #pragma once
 #ifndef BALL_H
 #define BALL_H
@@ -8,7 +16,7 @@ class Ball {
 
 public:
 
-	Ball();
+	Ball(int x, int y);
 	~Ball();
 
 	float get_pos_x();

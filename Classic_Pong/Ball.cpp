@@ -1,6 +1,14 @@
+/*
+*	Author: USB-Port
+*	File:   ball.cpp
+*	Date:   January 3rd 2017
+*
+*	This is the ball class file
+*/
+
 #include "Ball.h"
 
-Ball::Ball()
+Ball::Ball(int x, int y)
 {
 	ball_picture = al_load_bitmap("./ball_picture.png");
 	ping_sound = al_load_sample("./ping_sound.ogg");
@@ -9,8 +17,8 @@ Ball::Ball()
 	image_height = al_get_bitmap_height(ball_picture);
 	image_width = al_get_bitmap_width(ball_picture);
 
-	pos_x = 320;
-	pos_y = 220;
+	pos_x = x;
+	pos_y = y;
 }
 
 Ball::~Ball()
