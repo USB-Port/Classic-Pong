@@ -32,6 +32,17 @@ public:
 
 	void play_sound();
 
+	int get_speed();
+	void set_speed(int speed);
+
+	int get_bouncer_x();
+	int get_bouncer_y();
+
+	void flip_bouncer_x();
+	void flip_bouncer_y();
+
+	void increment_speed();
+
 
 private:
 
@@ -43,6 +54,11 @@ private:
 
 	float pos_x;
 	float pos_y;
+
+	int speed;
+
+	int bouncer_x;
+	int bouncer_y;
 
 
 };

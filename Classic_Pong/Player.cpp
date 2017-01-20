@@ -5,12 +5,23 @@
 *
 *	This is the player class file
 */
-
+#include <iostream>
 #include "Player.h"
+#include "allegro5\allegro_native_dialog.h"
+
+using namespace std;
+
 
 Player::Player()
 {
-	paddle_picture = al_load_bitmap("./player_one.png");
+	try {
+		paddle_picture = al_load_bitmap("./player_one.png");
+	}
+	catch (exception e)
+	{
+		cout << "Failed to load ./player_one.png";
+		
+	}
 	al_convert_mask_to_alpha(paddle_picture, al_map_rgb(255, 0, 255));
 
 	image_height = al_get_bitmap_height(paddle_picture);
@@ -18,6 +29,8 @@ Player::Player()
 
 	pos_x = 100;
 	pos_y = 0;
+
+	score = 0;
 }
 
 
@@ -50,4 +63,10 @@ int Player::get_image_height() {
 }
 int Player::get_image_width() {
 	return image_width;
+}
+int Player::get_score() {
+	return score;
+}
+void Player::set_score(int score) {
+	this->score = score;
 }

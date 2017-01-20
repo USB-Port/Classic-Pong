@@ -5,13 +5,22 @@
 *
 *	This is the ball class file
 */
-
+#include <iostream>
 #include "Ball.h"
+
+using namespace std;
 
 Ball::Ball(int x, int y)
 {
-	ball_picture = al_load_bitmap("./ball_picture.png");
-	ping_sound = al_load_sample("./ping_sound.ogg");
+	try {
+		ball_picture = al_load_bitmap("./ball_picture.png");
+		ping_sound = al_load_sample("./ping_sound.ogg");
+	}
+	catch (exception e) {
+		cout << "Failed to load ./ball_picture.png";
+		cout << "Failed to load ./ping_sound.ogg";
+	}
+
 	al_convert_mask_to_alpha(ball_picture, al_map_rgb(255, 0, 255));
 
 	image_height = al_get_bitmap_height(ball_picture);
@@ -19,6 +28,9 @@ Ball::Ball(int x, int y)
 
 	pos_x = x;
 	pos_y = y;
+	bouncer_x = 1;
+	bouncer_y = 1;
+	speed = 2;
 }
 
 Ball::~Ball()
@@ -56,4 +68,29 @@ void Ball::draw_ball() {
 void Ball::play_sound() {
 	al_play_sample(ping_sound, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, 0);
 
+}
+
+int Ball::get_speed() {
+	return speed;
+}
+void Ball::set_speed(int speed) {
+	this->speed = speed;
+}
+
+void Ball::increment_speed() {
+	speed++;
+}
+
+int Ball::get_bouncer_x() {
+	return bouncer_x;
+}
+int Ball::get_bouncer_y() {
+	return bouncer_y;
+}
+
+void Ball::flip_bouncer_x() {
+	bouncer_x *= -1;
+}
+void Ball::flip_bouncer_y() {
+	bouncer_y *= -1;
 }

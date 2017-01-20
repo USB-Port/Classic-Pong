@@ -26,6 +26,9 @@ public:
 	int get_image_height();
 	int get_image_width();
 
+	int get_score();
+	void set_score(int score);
+
 	void draw_paddle();
 
 
@@ -39,6 +42,7 @@ private:
 	float pos_x;
 	float pos_y;
 
+	int score;
 
 };
 #endif

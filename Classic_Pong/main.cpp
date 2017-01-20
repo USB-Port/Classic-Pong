@@ -83,7 +83,6 @@ int setup() {
 	return 0;
 }
 
-
 int main() {
 
 	//Allegro data types
@@ -94,11 +93,6 @@ int main() {
 
 	//Data used in the game logic
 	int hits = 0;
-	int player_one_score = 0;
-	int player_two_score = 0;
-	int bouncer_x = -1;
-	int bouncer_y = -1;
-	int ball_speed = 2;
 
 	bool redraw = true;
 	bool exit   = false;
@@ -167,7 +161,7 @@ int main() {
 	//Set the initial positions of the sprites
 	Ball ball(320, 120);
 	Player player[2];
-	player[1].set_pos_x(SCREEN_WIDTH - 20);
+	player[1].set_pos_x(SCREEN_WIDTH - 40);
 	player[0].set_pos_x(20);
 	
 	//Start of the game loop
@@ -178,88 +172,98 @@ int main() {
 		if (ev.type == ALLEGRO_EVENT_TIMER) {
 			// updating game logic goes
 
-			//Bouces the ball off the outter edges of the screen
+			//Bounces the ball off the outter edges of the screen
 			if (ball.get_pos_x() < 0 || ball.get_pos_x() > SCREEN_WIDTH - ball.get_image_width()) {
-				bouncer_x = bouncer_x*-1;
+				ball.flip_bouncer_x();
 				ball.play_sound();
 			}
 
 			//If the ball hits the left side of the screen, player 2 scores a point
 			if (ball.get_pos_x() < 0) {
-				player_two_score++;
-				cout << "Player 2: " << player_two_score <<endl;
+				player[PLAYER_TWO].set_score(player[PLAYER_TWO].get_score() + 1);
+				ball.set_speed(0);
+				cout << "Player 2: " << player[PLAYER_TWO].get_score() << endl;
+				al_show_native_message_box(display, "Score!", "", "Player 2 has score", "OK", 0);
+				ball.set_pos_x(320); 
+				ball.set_pos_y(240);
+				ball.set_speed(2);
 			}
 
 			//If the ball hits the right side of the screen player 1 scores a point
 			if (ball.get_pos_x() > SCREEN_WIDTH - ball.get_image_width()) {
-				player_one_score++;
-				cout << "Player 1: " << player_one_score <<endl;
+				player[PLAYER_ONE].set_score(player[PLAYER_ONE].get_score() + 1);
+				ball.set_speed(0);
+				cout << "Player 1: " << player[PLAYER_ONE].get_score() <<endl;
+				al_show_native_message_box(display, "Score!", "", "Player 1 has score", "OK", 0);
+				ball.set_pos_x(320);
+				ball.set_pos_y(240);
+				ball.set_speed(2);
 			}
 
 			//Bounces the ball off the upper and lower edges of the screen
 			if (ball.get_pos_y() < 0 || ball.get_pos_y() > SCREEN_HEIGHT - ball.get_image_height()) {
-				bouncer_y = bouncer_y*-1;
+				ball.flip_bouncer_y();
 				ball.play_sound();
 			}
 
 			//Bounces the ball off of player 1 paddle
-			if (ball.get_pos_x() >= player[0].get_pos_x() && ball.get_pos_x() < player[0].get_pos_x() + player[0].get_image_width() &&
-				ball.get_pos_y() >= player[0].get_pos_y() && ball.get_pos_y() < player[0].get_pos_y() + player[0].get_image_height()) {
-				bouncer_x = bouncer_x*-1;
+			if (ball.get_pos_x() >= player[PLAYER_ONE].get_pos_x() && ball.get_pos_x() < player[PLAYER_ONE].get_pos_x() + player[0].get_image_width() &&
+				ball.get_pos_y() >= player[PLAYER_ONE].get_pos_y() && ball.get_pos_y() < player[PLAYER_ONE].get_pos_y() + player[0].get_image_height()) {
+				ball.flip_bouncer_x();
 				ball.play_sound();
 				hits++;
 			}
 
 			//Bounces the ball off of player 2 paddle
-			if (ball.get_pos_x() >= player[1].get_pos_x() && ball.get_pos_x() < player[1].get_pos_x() + player[1].get_image_width() &&
-				ball.get_pos_y() >= player[1].get_pos_y() && ball.get_pos_y() < player[1].get_pos_y() + player[1].get_image_height()) {
-				bouncer_x = bouncer_x*-1;
+			if (ball.get_pos_x() + ball.get_image_width() >= player[PLAYER_TWO].get_pos_x() && ball.get_pos_x() < player[PLAYER_TWO].get_pos_x() + player[1].get_image_width() &&
+				ball.get_pos_y() >= player[PLAYER_TWO].get_pos_y() && ball.get_pos_y() < player[1].get_pos_y() + player[PLAYER_TWO].get_image_height()) {
+				ball.flip_bouncer_x();
 				ball.play_sound();
 				hits++;
 			}
 
 			//Update the ball's position
-			ball.set_pos_x(ball.get_pos_x() + ball_speed*bouncer_x);
-			ball.set_pos_y(ball.get_pos_y() + ball_speed*bouncer_y);
+			ball.set_pos_x(ball.get_pos_x() + ball.get_speed() * ball.get_bouncer_x());
+			ball.set_pos_y(ball.get_pos_y() + ball.get_speed() * ball.get_bouncer_y());
 
 			//Increase the ball's speed after every third hit
 			if (hits > 3) {
 				hits = 0;
-				ball_speed++;
+				ball.increment_speed();
 			}
 
 			//Move the computer player down if the ball is lower than the paddle
-			if (ball.get_pos_y() > player[1].get_pos_y()) {
-				player[1].set_pos_y(player[1].get_pos_y() + PADDLE_SPEED);
+			if (ball.get_pos_y() > player[PLAYER_TWO].get_pos_y()) {
+				player[1].set_pos_y(player[PLAYER_TWO].get_pos_y() + PADDLE_SPEED);
 			}
 
 			//Move the computer player up if the ball is lower than the paddle
-			if (ball.get_pos_y() < player[1].get_pos_y()) {
-				player[1].set_pos_y(player[1].get_pos_y() - PADDLE_SPEED);
+			if (ball.get_pos_y() < player[PLAYER_TWO].get_pos_y()) {
+				player[1].set_pos_y(player[PLAYER_TWO].get_pos_y() - PADDLE_SPEED);
 			}
 
 			//Game logic for key commands
 			if (key[KEY_UP]) {
-				player[0].set_pos_y(player[0].get_pos_y() - PADDLE_SPEED);
-				if (player[0].get_pos_y() < 0) {
-					player[0].set_pos_y(0);
+				player[0].set_pos_y(player[PLAYER_ONE].get_pos_y() - PADDLE_SPEED);
+				if (player[PLAYER_ONE].get_pos_y() < 0) {
+					player[PLAYER_ONE].set_pos_y(0);
 				}
 			}
 
 			if (key[KEY_DOWN]) {
-				player[0].set_pos_y(player[0].get_pos_y() + PADDLE_SPEED);
+				player[PLAYER_ONE].set_pos_y(player[0].get_pos_y() + PADDLE_SPEED);
 
-				if (player[0].get_pos_y() + player[0].get_image_height() > SCREEN_HEIGHT) {
-					player[0].set_pos_y(SCREEN_HEIGHT - player[0].get_image_height());
+				if (player[PLAYER_ONE].get_pos_y() + player[0].get_image_height() > SCREEN_HEIGHT) {
+					player[PLAYER_ONE].set_pos_y(SCREEN_HEIGHT - player[0].get_image_height());
 				}
 			}
 
 			//This will keep the computer player from moving off screen
-			if (player[1].get_pos_y() + player[0].get_image_height() > SCREEN_HEIGHT) {
-				player[1].set_pos_y(SCREEN_HEIGHT - player[0].get_image_height());
+			if (player[PLAYER_TWO].get_pos_y() + player[PLAYER_ONE].get_image_height() > SCREEN_HEIGHT) {
+				player[PLAYER_TWO].set_pos_y(SCREEN_HEIGHT - player[PLAYER_ONE].get_image_height());
 			}
-			if (player[1].get_pos_y() < 0) {
-				player[1].set_pos_y(0);
+			if (player[PLAYER_TWO].get_pos_y() < 0) {
+				player[PLAYER_TWO].set_pos_y(0);
 			}
 
 
@@ -304,9 +308,11 @@ int main() {
 			redraw = false;
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 
-			player[0].draw_paddle();
-			player[1].draw_paddle();
+			player[PLAYER_ONE].draw_paddle();
+			player[PLAYER_TWO].draw_paddle();
 			ball.draw_ball();
+
+			
 
 			al_flip_display();
 
