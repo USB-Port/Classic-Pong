@@ -3,7 +3,7 @@
 *	File:   player.cpp
 *	Date:   January 3rd 2017
 *
-*	This is the player class file
+*	This is the player class file.
 */
 #include <iostream>
 #include "Player.h"
@@ -11,7 +11,7 @@
 
 using namespace std;
 
-
+//Constructor
 Player::Player()
 {
 	try {
