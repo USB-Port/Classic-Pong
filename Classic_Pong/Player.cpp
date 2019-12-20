@@ -28,7 +28,7 @@ Player::Player()
 	image_width = al_get_bitmap_width(paddle_picture);
 
 	pos_x = 100;
-	pos_y = 0;
+	pos_y = 20;
 
 	score = 0;
 }
